@@ -29,7 +29,7 @@ document.addEventListener('deviceready', onDeviceReady, false)
 
 function onDeviceReady() {
   twitter(config).login()
-    .then(api => api.request('statuses/user_timeline.json?screen_name=danderson00&count=20'))
+    .then(api => api.request('statuses/user_timeline.json?screen_name=danderson00&count=20' /*, 'GET' */))
     .then(results => writeToDocument(results.map(x => x.text).join('\n')))
     .catch(error => writeToDocument(error.message))
 
