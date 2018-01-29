@@ -1,8 +1,8 @@
-const OAuth = require('oauth-1.0a')
-const crypto = require('crypto')
+var OAuth = require('oauth-1.0a')
+var crypto = require('crypto')
 
 module.exports = function (config) {
-  const oauth = OAuth({
+  var oauth = OAuth({
     consumer: { key: config.consumerKey, secret: config.consumerSecret },
     signature_method: 'HMAC-SHA1',
     hash_function: function(base_string, key) {

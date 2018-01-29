@@ -1,5 +1,5 @@
 var FormData = require('form-data')
-var { parse } = require('querystring')
+var parse = require('querystring').parse
 
 module.exports = function (config, sign) {
   return obtainRequestToken()

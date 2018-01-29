@@ -1,8 +1,15 @@
 {
   "name": "cordova-twitter-client",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "main": "index.js",
   "author": "danderson00",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "form-data": "^2.3.1",
+    "oauth-1.0a": "^2.2.3"
+  },
+  "peerDependencies": {
+    "cordova-plugin-inappbrowser": "^1.7.2"    
+  }
 }
