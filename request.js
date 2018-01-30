@@ -1,7 +1,21 @@
+var stringify = require('querystring').stringify
+
 module.exports = function (config, sign, token) {
-  return function (endpoint, method) {
-    method = method || 'GET'
-    var url = 'https://api.twitter.com/1.1/' + endpoint
+  return function (options, method) {
+    var url
+
+    if(typeof options === 'string') {
+      method = method || 'GET'
+      url = 'https://api.twitter.com/1.1/' + options
+
+    } else {
+      method = options.method || 'GET'
+      url = 'https://api.twitter.com/1.1/' + options.endpoint
+      if(options.parameters) {
+        url += '?' + stringify(options.parameters)
+      }
+    }
+
     var headers = sign({ url: url, method: method }, token)
 
     return fetch(url, { method: method, headers: headers }).then(function(response) {

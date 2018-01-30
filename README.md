@@ -14,7 +14,7 @@ If the InAppBrowser plugin is not already installed:
 
 ## Usage
 
-```
+```Javascript
 const twitter = require('cordova-twitter-client')
 
 const config = {
@@ -39,4 +39,16 @@ function onDeviceReady() {
     document.body.appendChild(element)
   }
 }
+```
+
+You can also pass an options object:
+
+```Javascript
+api.request({
+  endpoint: 'statuses/update.json',
+  method: 'POST',
+  parameters: {
+    status: 'A tweet from the API!'
+  }
+})
 ```
