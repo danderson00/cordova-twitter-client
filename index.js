@@ -15,6 +15,13 @@ module.exports = function (config) {
         }
       })
     },
+    fromToken: function (token) {
+      return {
+        request: request(config, signer, token),
+        token: token,
+        sign: signer
+      }
+    },
     sign: signer
   }
 }

@@ -52,3 +52,19 @@ api.request({
   }
 })
 ```
+
+Or create a client from a stored token:
+
+```Javascript
+import { storeToken } from 'some-storage-mechanism'
+
+twitter(config).login()
+  .then(({ token }) => storeToken(token))
+```
+
+```Javascript
+import { retrieveToken } from 'some-storage-mechanism'
+
+const api = twitter(config).fromToken(retrieveToken())
+api.request({ /* ... */ })
+```
