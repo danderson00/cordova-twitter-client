@@ -35,7 +35,7 @@ module.exports = function (config, sign) {
 
   function obtainVerifier(token) {
     return new Promise(function (resolve, reject) {
-      var browser = cordova.InAppBrowser.open('https://api.twitter.com/oauth/authenticate?' + token)
+      var browser = cordova.InAppBrowser.open('https://api.twitter.com/oauth/authenticate?' + token, '_self', 'location=no')
 
       browser.addEventListener('loadstart', function(e) {
         if(e.url.indexOf(config.callbackUrl) === 0) {
