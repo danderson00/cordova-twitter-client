@@ -2,7 +2,7 @@ var stringify = require('querystring').stringify
 
 module.exports = function (config, sign, token) {
   return function (options, method) {
-    var url
+    var url, body
 
     if(typeof options === 'string') {
       method = method || 'GET'
@@ -11,14 +11,19 @@ module.exports = function (config, sign, token) {
     } else {
       method = options.method || 'GET'
       url = 'https://api.twitter.com/1.1/' + options.endpoint
+
       if(options.parameters) {
-        url += '?' + stringify(options.parameters)
+        if(options.parameterType === 'form') {
+          body = objectToFormData(options.parameters)
+        } else {
+          url += '?' + stringify(options.parameters)
+        }
       }
     }
 
     var headers = sign({ url: url, method: method }, token)
 
-    return fetch(url, { method: method, headers: headers }).then(function(response) {
+    return fetch(url, { method: method, headers: headers, body: body }).then(function(response) {
       if(response.status === 200)
         return response.json()
 
@@ -27,4 +32,11 @@ module.exports = function (config, sign, token) {
       })
     })
   }
+}
+
+function objectToFormData(source) {
+  return Object.keys(source).reduce(function(result, property) {
+    result.append(property, source[property])
+    return result
+  }, new FormData())
 }
