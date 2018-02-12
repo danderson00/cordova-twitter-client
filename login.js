@@ -35,9 +35,12 @@ module.exports = function (config, sign) {
 
   function obtainVerifier(token) {
     return new Promise(function (resolve, reject) {
-      var browser = cordova.InAppBrowser.open('https://api.twitter.com/oauth/authenticate?' + token, '_self', 'location=no')
+      var browser = cordova.InAppBrowser.open('https://api.twitter.com/oauth/authenticate?' + token, '_blank', 'location=no')
 
-      browser.addEventListener('loadstart', function(e) {
+      browser.addEventListener('loadstart', completeAuthentication)
+      browser.addEventListener('loaderror', completeAuthentication)
+      
+      function completeAuthentication(e) {
         if(e.url.indexOf(config.callbackUrl) === 0) {
           browser.close()          
           var result = parse(e.url.substring(config.callbackUrl.length + 1))
@@ -47,7 +50,7 @@ module.exports = function (config, sign) {
           else
             resolve(result)
         }
-      })
+      }
     })
   }
 
