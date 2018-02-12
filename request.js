@@ -2,15 +2,15 @@ var stringify = require('querystring').stringify
 
 module.exports = function (config, sign, token) {
   return function (options, method) {
-    var url, body
+    var url, body, domain = options.domain || 'api.twitter.com'
 
     if(typeof options === 'string') {
       method = method || 'GET'
-      url = 'https://api.twitter.com/1.1/' + options
+      url = 'https://' + domain + '/1.1/' + options
 
     } else {
       method = options.method || 'GET'
-      url = 'https://api.twitter.com/1.1/' + options.endpoint
+      url = 'https://' + domain + '/1.1/' + options.endpoint
 
       if(options.parameters) {
         if(options.parameterType === 'form') {
@@ -24,8 +24,11 @@ module.exports = function (config, sign, token) {
     var headers = sign({ url: url, method: method }, token)
 
     return fetch(url, { method: method, headers: headers, body: body }).then(function(response) {
-      if(response.status === 200)
-        return response.json()
+      if(response.status >= 200 && response.status < 300)
+        return response.text().then(function (text) {
+          if(text)
+            return JSON.parse(text)
+        })
 
       return response.text().then(function (error) {
         throw new Error('Unable to request from Twitter API: ' + error)
