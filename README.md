@@ -22,7 +22,7 @@ const config = {
   consumerKey: '<CONSUMER_KEY>',
   consumerSecret: '<CONSUMER_SECRET>',
   accessToken: '<ACCESS_TOKEN>',
-  accessTokenSecret: '<ACCESS_TOKEN_SECRET>',
+  accessTokenSecret: '<ACCESS_TOKEN_SECRET>'
 }
 
 document.addEventListener('deviceready', onDeviceReady, false)
@@ -68,3 +68,6 @@ import { retrieveToken } from 'some-storage-mechanism'
 const api = twitter(config).fromToken(retrieveToken())
 api.request({ /* ... */ })
 ```
+
+### Uploading Media
+

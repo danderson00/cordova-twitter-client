@@ -10,6 +10,10 @@
     "oauth-1.0a": "^2.2.3"
   },
   "peerDependencies": {
-    "cordova-plugin-inappbrowser": "^1.7.2"    
+    "cordova-plugin-inappbrowser": "^1.7.2"
+  },
+  "devDependencies": {
+    "jest": "^22.2.2",
+    "jest-fetch-mock": "^1.4.1"
   }
 }

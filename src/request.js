@@ -23,7 +23,7 @@ module.exports = function (config, sign, token) {
 
     var headers = sign({ url: url, method: method }, token)
 
-    return fetch(url, { method: method, headers: headers, body: body }).then(function(response) {
+    return config.fetch(url, { method: method, headers: headers, body: body }).then(function(response) {
       if(response.status >= 200 && response.status < 300)
         return response.text().then(function (text) {
           if(text)

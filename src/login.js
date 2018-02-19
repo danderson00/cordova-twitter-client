@@ -20,7 +20,7 @@ module.exports = function (config, sign) {
 
     let headers = sign(request, token)
 
-    return fetch(request.url, {
+    return config.fetch(request.url, {
       method: request.method,
       headers: headers
     })
@@ -65,7 +65,7 @@ module.exports = function (config, sign) {
     var data = new FormData()
     data.append('oauth_verifier', params.oauth_verifier)
 
-    return fetch(request.url, {
+    return config.fetch(request.url, {
       method: request.method,
       headers: headers,
       body: data
