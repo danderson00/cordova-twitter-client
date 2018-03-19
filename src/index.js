@@ -2,12 +2,13 @@ var login = require('./login')
 var sign = require('./sign')
 var request = require('./request')
 var upload = require('./upload')
+var middleware = require('./middleware')
 
 module.exports = function (config) {
   if(!config)
     throw new Error('No configuration supplied')
 
-  config.fetch = config.fetch || (typeof fetch !== undefined && fetch)
+  config.fetch = config.fetch || (typeof fetch !== 'undefined' && fetch)
 
   if(!config.fetch)
     throw new Error('No fetch implementation specified')
@@ -16,9 +17,10 @@ module.exports = function (config) {
   
   return {
     login: function () {
-      return login(config, signer).then(constructApi)
+      return login(config, signer).cordova().then(constructApi)
     },
-    fromToken: constructApi
+    fromToken: constructApi,
+    middleware: middleware(config, signer)
   }
 
   function constructApi(token) {

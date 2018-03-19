@@ -2,9 +2,15 @@ var FormData = require('form-data')
 var parse = require('querystring').parse
 
 module.exports = function (config, sign) {
-  return obtainRequestToken()
-    .then(obtainVerifier)
-    .then(obtainAccessToken)
+  return {
+    cordova: function() {
+      obtainRequestToken()
+        .then(obtainVerifier)
+        .then(obtainAccessToken)
+    },
+    obtainRequestToken: obtainRequestToken,
+    obtainAccessToken: obtainAccessToken
+  }
 
   function obtainRequestToken() {
     let request = {

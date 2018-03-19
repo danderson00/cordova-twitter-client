@@ -2,7 +2,7 @@
 
 A simple, promise based twitter client for Apache Cordova that vastly simplifies interactions with the Twitter API.
 
-You should be aware that this embeds your Twitter application secrets in your cordova app.
+You should be aware that this embeds your Twitter application secrets in your cordova app. There is good discussion of this issue [here](https://arstechnica.com/information-technology/2010/09/twitter-a-case-study-on-how-to-do-oauth-wrong/).
 
 ## Installation
 
