@@ -1,8 +1,8 @@
 {
   "name": "cordova-twitter-client",
-  "version": "0.0.13",
+  "version": "0.0.15",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "author": "danderson00",
   "license": "MIT",
   "dependencies": {

@@ -1,7 +1,21 @@
 var stringify = require('querystring').stringify
 
 module.exports = function (config, sign, token) {
-  return function (options, method) {
+  var executeAndParse = function (options, method) {
+    return executeRequest(options, method).then(function(response) {
+      if(response.status >= 200 && response.status < 300)
+        return response.text().then(function (text) {
+          if(text)
+            return JSON.parse(text)
+        })
+
+      return response.text().then(function (error) {
+        throw new Error('Unable to request from Twitter API: ' + error)
+      })
+    })
+  }
+
+  var executeRequest = function (options, method) {
     var url, body, domain = options.domain || 'api.twitter.com'
 
     if(typeof options === 'string') {
@@ -23,18 +37,11 @@ module.exports = function (config, sign, token) {
 
     var headers = sign({ url: url, method: method }, token)
 
-    return config.fetch(url, { method: method, headers: headers, body: body }).then(function(response) {
-      if(response.status >= 200 && response.status < 300)
-        return response.text().then(function (text) {
-          if(text)
-            return JSON.parse(text)
-        })
-
-      return response.text().then(function (error) {
-        throw new Error('Unable to request from Twitter API: ' + error)
-      })
-    })
+    return config.fetch(url, { method: method, headers: headers, body: body })
   }
+
+  executeAndParse.execute = executeRequest
+  return executeAndParse
 }
 
 function objectToFormData(source) {
