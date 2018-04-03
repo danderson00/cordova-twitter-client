@@ -1,8 +1,13 @@
 var loginModule = require('./login')
+var url = require('url')
+
+var keyCookieName = 'CORDOVA-TWITTER-CLIENT-KEY'
+var secretCookieName = 'CORDOVA-TWITTER-CLIENT-SECRET'
 
 module.exports = function (config, sign) {
   var clientModule = require('./index')
   var login = loginModule(config, sign)
+  var appHandlerUrl = config.appHandlerUrl ? url.parse(config.appHandlerUrl) : url.parse('/')
 
   return function (req, res, next) {
     if(endsWith(req.path, '/twitter/login')) {
@@ -22,22 +27,34 @@ module.exports = function (config, sign) {
         })
     }
 
-    function handleCallback() {
+    function handleCallback() {      
       login.obtainAccessToken({
         oauth_token: req.query.oauth_token,
         oauth_verifier: req.query.oauth_verifier
       }).then(function (token) {
-        res.redirect(config.appHandlerUrl + '?key=' + token.key + '&secret=' + token.secret)
+        var query = 
+          (appHandlerUrl.search ? (appHandlerUrl.search + '&') : '') + 
+          (config.cookies === false ? ('key=' + token.key + '&secret=' + token.secret) : '')
+
+        if(config.cookies !== false) {
+          res.cookie(keyCookieName, token.key)
+          res.cookie(secretCookieName, token.secret)
+        }
+
+        res.redirect(url.format({
+          protocol: appHandlerUrl.protocol,
+          domain: appHandlerUrl.domain,
+          pathname: appHandlerUrl.pathname,
+          search: query,
+          hash: appHandlerUrl.hash
+        }))
       })
     }
 
     function callApi() {
       var endpoint = req.path.substring(req.path.indexOf('/twitter/api/') + 13)
       var client = clientModule(config)
-      var api = client.fromToken({
-        key: req.query.key,
-        secret: req.query.secret
-      })
+      var api = client.fromToken(token())
       
       api.request.execute({
         method: req.method,
@@ -56,6 +73,13 @@ module.exports = function (config, sign) {
             ? querystring
             : querystring.concat(key + '=' + req.query[key])
         }, []).join('&')
+      }
+
+      function token() {
+        return {
+          key: req.cookies[keyCookieName] || req.query.key,
+          secret: req.cookies[secretCookieName] || req.query.secret
+        }
       }
     }
   }

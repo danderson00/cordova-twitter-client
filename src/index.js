@@ -8,9 +8,7 @@ module.exports = function (config) {
   if(!config)
     throw new Error('No configuration supplied')
 
-  config.fetch = config.fetch || (typeof fetch !== 'undefined' && fetch)
-
-  if(!config.fetch)
+  if(!config.fetch && typeof fetch === 'undefined')
     throw new Error('No fetch implementation specified')
 
   var signer = sign(config)

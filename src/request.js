@@ -16,28 +16,44 @@ module.exports = function (config, sign, token) {
   }
 
   var executeRequest = function (options, method) {
-    var url, body, domain = options.domain || 'api.twitter.com'
+    var url, querystring, body, domain = options.domain || 'api.twitter.com'
 
     if(typeof options === 'string') {
       method = method || 'GET'
-      url = 'https://' + domain + '/1.1/' + options
-
+      url = config.browser
+        ? '/twitter/api/' + options
+        : 'https://' + domain + '/1.1/' + options
     } else {
       method = options.method || 'GET'
-      url = 'https://' + domain + '/1.1/' + options.endpoint
+      url = config.browser
+        ? '/twitter/api/' + options.endpoint
+        : 'https://' + domain + '/1.1/' + options.endpoint
+    }
 
-      if(options.parameters) {
-        if(options.parameterType === 'form') {
-          body = objectToFormData(options.parameters)
-        } else {
-          url += '?' + stringify(options.parameters)
-        }
+    if(options.parameters) {
+      if(options.parameterType === 'form') {
+        body = objectToFormData(options.parameters)
+      } else {
+        querystring = querystring
+          ? querystring + '&' + stringify(options.parameters)
+          : stringify(options.parameters)
       }
     }
 
-    var headers = sign({ url: url, method: method }, token)
+    if(config.browser && token) {
+      var tokenString = 'key=' + token.key + '&secret=' + token.secret
+      querystring = querystring
+        ? querystring + '&' + tokenString
+        : tokenString
+    }
 
-    return config.fetch(url, { method: method, headers: headers, body: body })
+    var finalUrl = querystring
+      ? url + (urlContainsQuery(url) ? '&' : '?') + querystring
+      : url
+
+    var headers = config.browser ? undefined : sign({ url: finalUrl, method: method }, token)
+
+    return (config.fetch || fetch)(finalUrl, { method: method, headers: headers, body: body, credentials: 'same-origin' })
   }
 
   executeAndParse.execute = executeRequest
@@ -49,4 +65,8 @@ function objectToFormData(source) {
     result.append(property, source[property])
     return result
   }, new FormData())
+}
+
+function urlContainsQuery(url) {
+  return url.indexOf('?') > -1
 }

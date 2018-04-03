@@ -8,7 +8,7 @@ module.exports = function (request) {
     .then(function(results) {
       var media_id = results.media_id_string
 
-      return Promise.all(splitBlob(blob, blobSize).map((chunk, index) => {
+      return Promise.all(splitBlob(blob, blobSize).map(function (chunk, index) {
         return request(upload({
           command: 'APPEND',
           media_id: media_id,

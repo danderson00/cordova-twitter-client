@@ -6,7 +6,9 @@
       }
 
       function request() {
-        fetch('/twitter/api/statuses/user_timeline.json?screen_name=danderson00&count=100&key=' + getQueryVariable('key') + '&secret=' + getQueryVariable('secret'))
+        fetch('/twitter/api/statuses/user_timeline.json?screen_name=danderson00&count=100&key=' + 
+          getQueryVariable('key') + '&secret=' + getQueryVariable('secret'),
+          { credentials: 'same-origin' })
           .then(response => response.text())
           .then(text => document.getElementById('result').innerHTML = text)
       }

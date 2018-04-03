@@ -4,7 +4,7 @@ var parse = require('querystring').parse
 module.exports = function (config, sign) {
   return {
     cordova: function() {
-      obtainRequestToken()
+      return obtainRequestToken()
         .then(obtainVerifier)
         .then(obtainAccessToken)
     },
@@ -26,7 +26,7 @@ module.exports = function (config, sign) {
 
     let headers = sign(request, token)
 
-    return config.fetch(request.url, {
+    return (config.fetch || fetch)(request.url, {
       method: request.method,
       headers: headers
     })
@@ -71,7 +71,7 @@ module.exports = function (config, sign) {
     var data = new FormData()
     data.append('oauth_verifier', params.oauth_verifier)
 
-    return config.fetch(request.url, {
+    return (config.fetch || fetch)(request.url, {
       method: request.method,
       headers: headers,
       body: data

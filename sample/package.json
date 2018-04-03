@@ -2,6 +2,7 @@
   "name": "sample",
   "version": "0.0.1",
   "dependencies": {
+    "cookie-parser": "^1.4.3",
     "express": "^4.16.3",
     "node-fetch": "^2.1.1"
   }
